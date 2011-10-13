@@ -1,0 +1,4 @@
+applet=colladaLoader11.jar
+
+application=colladaLoader11.jar
+application.macosx64=colladaLoader11_mac64.jar
