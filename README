@@ -1,0 +1,8 @@
+This project is based on the work of Markus Zimmermann:
+http://wiki.enterpriselab.ch/el/projects:colladaloader:colladaloader
+
+I made some improvements so that also files from current Google Sketchup may be loaded.
+
+Maybe this library works also with COLLADA files from other authoring tools. But bear in mind that this loader doesn't yet implements the whole COLLADA Specification.
+
+Feel free to contribute to this project!
