@@ -8,6 +8,7 @@ import colladaLoader.Triangle;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.LinkedList;
 import java.util.regex.*;
 
 import colladaLoader.xmlMapping.Geometry;
@@ -62,21 +63,19 @@ public class ColladaRawLoader extends PApplet{
         XMLElement root = new XMLElement(this, filename);
 
         authoring_tool = root.getChild("asset/contributor/authoring_tool").getContent();
-        Pattern p = Pattern.compile( ".*[\\d.]+.*" ); 
-        Matcher m = p.matcher(authoring_tool ); 
-        if (m.matches())
+        
+        LinkedList<String> numbers = new LinkedList<String>();
+        Pattern p = Pattern.compile("\\d+");
+        Matcher m = p.matcher(authoring_tool);
+        while (m.find()) {
+        	numbers.add(m.group());
+        }
+        authoring_tool_version = new int[numbers.size()];
+        for (int i=0; i<numbers.size(); i++)
         {
-	        MatchResult r =  m.toMatchResult();
-	        String versionNumber = r.group();
-	        String[] versionSubNumbers = versionNumber.split(".");
-	        authoring_tool_version = new int[versionSubNumbers.length];
-	        for (int i=0; i<versionSubNumbers.length; i++)
-	        {
-	        	authoring_tool_version[i] = Integer.parseInt(versionSubNumbers[i]);
-	        }
+        	authoring_tool_version[i] = Integer.parseInt(numbers.get(i));
         }
         
-        //if (!sketchupversion.equals("Google SketchUp 8.0.3117")) sketchupversion = "WARNING: the actual file is made by "+sketchupversion+" and not 'Google SketchUp 8.0.3117'. It might contain a different XML-Structure";
 
         //build images
         XMLElement[] images = root.getChildren("library_images/image");
