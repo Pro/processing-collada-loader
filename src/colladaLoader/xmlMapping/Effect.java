@@ -25,13 +25,41 @@ class Effect {
     private float[] color;
     private boolean hasTexture = false;
 
+    //add support for your chosen effect here
     Effect(XMLElement effect, Library_Images images)
     {
         ID = effect.getString("id");
+        XMLElement diffuse = null;
 
-        XMLElement diffuse = effect.getChild("profile_COMMON/technique/lambert/diffuse");
-        if (diffuse == null)
-        	diffuse = effect.getChild("profile_COMMON/technique/constant/transparent");
+        //Get the effect type. Common examples are lambert and Phong
+        String effectType = effect.getChild("profile_COMMON/technique").getChild(0).getName().toString();
+         
+        if(effectType.equals("lambert"))    {        	 
+        	 //get lambert -> diffuse if possible
+	        diffuse = effect.getChild("profile_COMMON/technique/lambert/diffuse");	         
+	         //if lambert -> diffuse does not exist then take the transparency value as the diffuse value	        
+	        
+	        if (diffuse == null) //not sure about this constant/transparent...havent seen this in collada file before but leaving it in case 
+	        	diffuse = effect.getChild("profile_COMMON/technique/constant/transparent");
+	        
+	        if (diffuse == null) //in case the transparent above doesnt catch the transparent value when a diffuse is not present 
+	        	diffuse = effect.getChild("profile_COMMON/technique/lambert/transparent");
+        }
+        
+        if(effectType.equals("phong"))	{
+        	//get Phong -> diffuse if possible
+	        diffuse = effect.getChild("profile_COMMON/technique/phong/diffuse");	
+	        
+	         //if Phong -> diffuse does not exist then take the transparency value as the diffuse value	        
+	        if (diffuse == null)
+	        	diffuse = effect.getChild("profile_COMMON/technique/phong/transparent");
+        }
+        
+         //give user error message to tell them where to look to add support for their shader listed in the collada file
+        if( diffuse == null)
+        	System.out.print("Unable to find diffuse value. Try adding support for your chosen effect in the Effect.java"); 
+        
+         //if diffuse is null an error will be thrown here
         if (diffuse.getChildren()[0].getName().equals("texture"))
         {
             hasTexture = true;
